@@ -1,4 +1,4 @@
-interface Size {
+interface ISize {
   xs: string;
   sm: string;
   md: string;
@@ -7,7 +7,7 @@ interface Size {
   xxl: string;
 }
 
-const size: Size = {
+const size: ISize = {
   xs: "400px",
   sm: "600px",
   md: "900px",
