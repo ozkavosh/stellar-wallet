@@ -2,9 +2,8 @@ import { createGlobalStyle } from 'styled-components'
 import fontsCss from './fonts.module.css'
 
 export const GlobalStyles = createGlobalStyle`
- ${fontsCss} // this works as a normal styled css
+ ${fontsCss}
 
-/* Box sizing rules */
 *,
 *::before,
 *::after {
@@ -27,6 +26,7 @@ body {
   background-color: ${({ theme }) => theme.colors.background};
   line-height: 1;
 }
+
 h1,
 h2,
 h3,
@@ -49,7 +49,7 @@ button {
   padding: 0;
   cursor: pointer;
 }
-/* Remove list styles on ul, ol elements with a list role, which suggests default styling will be removed */
+
 ul[role="list"],
 ol[role="list"] {
   list-style: none;
@@ -57,30 +57,28 @@ ol[role="list"] {
 li {
   list-style-type: none;
 }
-/* Set core root defaults */
+
 html:focus-within {
   scroll-behavior: smooth;
 }
-/* A elements that don't have a class get default styles */
+
 a:not([class]) {
   text-decoration-skip-ink: auto;
 }
 
-/* Make images easier to work with */
 img,
 picture {
   max-width: 100%;
   display: block;
 }
 
-/* Inherit fonts for inputs and buttons */
 input,
 button,
 textarea,
 select {
   font: inherit;
 }
-/* Remove all animations, transitions and smooth scroll for people that prefer not to see them */
+
 @media (prefers-reduced-motion: reduce) {
   html:focus-within {
     scroll-behavior: auto;
