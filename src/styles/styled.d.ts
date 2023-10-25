@@ -1,7 +1,7 @@
 import 'styled-components'
 
 declare module 'styled-components' {
-  export interface DefaultTheme {
+  export interface IDefaultTheme {
     colors: {
       primary: '#FAFAFA'
       secondary: '#FFC80A'
