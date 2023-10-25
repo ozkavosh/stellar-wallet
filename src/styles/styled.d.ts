@@ -6,7 +6,7 @@ declare module 'styled-components' {
       primary: '#FAFAFA'
       secondary: '#FFC80A'
       tertiary: '#303030'
-      background: '#ffffff'
+      background: '#303030'
       text: '#000000'
       primaryTextColor: '#594F43'
       secondaryTextColor: '#777777'
