@@ -9,7 +9,6 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyles />
-      {/*TODO Temporary placement, routing goes here*/}
       <Header />
       <Home />
     </ThemeProvider>
