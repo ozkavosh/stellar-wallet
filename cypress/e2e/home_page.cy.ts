@@ -1,15 +1,11 @@
 describe("The Home Page", () => {
-  it("successfully loads", () => {
-    cy.visit("/");
-  });
-
-  it("contains a header", () => {
+  it("Should contain a header", () => {
     cy.visit("/");
 
     cy.get("header").should("exist");
   });
 
-  it("contains two buttons", () => {
+  it("Should contain two buttons", () => {
     cy.visit("/");
 
     const buttons = cy.get("button");
