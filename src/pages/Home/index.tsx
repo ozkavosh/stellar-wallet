@@ -1,7 +1,8 @@
 import { Container, Title, ButtonContainer } from "./style"
 import { Button } from "../../components/Button"
+import { FC } from "react"
 
-export default function Home() : JSX.Element {
+const Home : FC = () => {
   return (
     <Container>
         <Title>Sign in to your account</Title>
@@ -12,3 +13,5 @@ export default function Home() : JSX.Element {
     </Container>
   )
 }
+
+export default Home;
