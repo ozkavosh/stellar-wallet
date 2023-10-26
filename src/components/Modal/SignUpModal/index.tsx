@@ -20,7 +20,7 @@ const SignUpModal: FC<IModal> = ({ showModal, setShowModal }: IModal) => {
     secretKey: "",
   });
 
-  const handleCopyBtnClick = () => {
+  const handleCopyButtonClick = () => {
     const copyText = `Public key: ${keyPair.publicKey}\nSecret key: ${keyPair.secretKey}`;
 
     window.navigator.clipboard.writeText(copyText);
@@ -49,7 +49,7 @@ const SignUpModal: FC<IModal> = ({ showModal, setShowModal }: IModal) => {
         onChange={handleTextInputChange}
         disabled
       />
-      <CopyLink onClick={handleCopyBtnClick}>
+      <CopyLink onClick={handleCopyButtonClick}>
         Copy keys <MdContentCopy />
       </CopyLink>
       <Button className="continue" dark>
