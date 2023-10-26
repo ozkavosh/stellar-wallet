@@ -1,3 +1,4 @@
+import { FC } from "react";
 import {
   Background,
   ModalContent,
@@ -11,11 +12,11 @@ interface IBaseModal {
   children: React.ReactNode;
 }
 
-export default function BaseModal({
+const BaseModal : FC<IBaseModal> = ({
   showModal,
   setShowModal,
   children,
-}: IBaseModal) {
+}: IBaseModal) => {
 
   return showModal ? (
     <Background>
@@ -29,3 +30,5 @@ export default function BaseModal({
     </Background>
   ) : null;
 }
+
+export default BaseModal;
