@@ -25,7 +25,7 @@ const SignInModal: FC<IModal> = ({ showModal, setShowModal }: IModal) => {
         onChange={handleTextInputChange}
         placeholder="Starts with S, example: SCHK..."
       />
-      <Button dark>Connect</Button>
+      <Button className="continue" dark>Connect</Button>
     </BaseModal>
   );
 };
