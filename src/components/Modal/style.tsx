@@ -68,7 +68,7 @@ export const TextInput = styled.input`
   margin-bottom: 10px;
 `;
 
-export const CopyLink = styled.button`
+export const CopyKeysButton = styled.button`
   border: none;
   outline: none;
   align-self: flex-start;

@@ -1,12 +1,13 @@
 import { FC, useState } from "react";
 import BaseModal from "../BaseModal";
-import { CopyLink, TextInput } from "../style";
+import { CopyKeysButton, TextInput } from "../style";
 import { Button } from "../../Button";
 import { MdContentCopy } from "react-icons/md";
 
-interface IModal {
+interface ISignUpModal {
   showModal: React.SetStateAction<boolean>;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
+  onCopyButtonClick: (publicKey: string, secretKey: string) => void;
 }
 
 interface IKeyPair {
@@ -14,17 +15,11 @@ interface IKeyPair {
   secretKey: string;
 }
 
-const SignUpModal: FC<IModal> = ({ showModal, setShowModal }: IModal) => {
+const SignUpModal: FC<ISignUpModal> = ({ showModal, setShowModal, onCopyButtonClick }: ISignUpModal) => {
   const [keyPair, setKeyPair] = useState<IKeyPair>({
     publicKey: "",
     secretKey: "",
   });
-
-  const handleCopyButtonClick = () => {
-    const copyText = `Public key: ${keyPair.publicKey}\nSecret key: ${keyPair.secretKey}`;
-
-    window.navigator.clipboard.writeText(copyText);
-  };
 
   const handleTextInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setKeyPair((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -49,9 +44,9 @@ const SignUpModal: FC<IModal> = ({ showModal, setShowModal }: IModal) => {
         onChange={handleTextInputChange}
         disabled
       />
-      <CopyLink onClick={handleCopyButtonClick}>
+      <CopyKeysButton onClick={() => onCopyButtonClick(keyPair.publicKey, keyPair.secretKey)}>
         Copy keys <MdContentCopy />
-      </CopyLink>
+      </CopyKeysButton>
       <Button className="continue" dark>
         Continue
       </Button>
