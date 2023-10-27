@@ -47,7 +47,7 @@ const SignUpModal: FC<ISignUpModal> = ({ showModal, setShowModal, onCopyButtonCl
       <CopyKeysButton onClick={() => onCopyButtonClick(keyPair.publicKey, keyPair.secretKey)}>
         Copy keys <MdContentCopy />
       </CopyKeysButton>
-      <Button className="continue" dark>
+      <Button className="continue" $dark>
         Continue
       </Button>
     </BaseModal>

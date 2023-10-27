@@ -6,9 +6,10 @@ import { Button } from "../../Button";
 interface IModal {
   showModal: React.SetStateAction<boolean>;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
+  onSignIn: (secretKey: string) => void;
 }
 
-const SignInModal: FC<IModal> = ({ showModal, setShowModal }: IModal) => {
+const SignInModal: FC<IModal> = ({ showModal, setShowModal, onSignIn }: IModal) => {
   const [secretKey, setSecretKey] = useState<string>("");
 
   const handleTextInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -25,7 +26,7 @@ const SignInModal: FC<IModal> = ({ showModal, setShowModal }: IModal) => {
         onChange={handleTextInputChange}
         placeholder="Starts with S, example: SCHK..."
       />
-      <Button className="continue" dark>Connect</Button>
+      <Button onClick={() => onSignIn(secretKey)} className="continue" $dark>Connect</Button>
     </BaseModal>
   );
 };
