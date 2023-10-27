@@ -2,7 +2,7 @@ import { FC, useState } from "react";
 import BaseModal from "../BaseModal";
 import { ErrorText, TextInput } from "../style";
 import { Button } from "../../Button";
-import validateSecretKeyInput from "../../../utils/validateSecretKeyInput";
+import { StrKey } from "stellar-sdk";
 
 interface IModal {
   showModal: React.SetStateAction<boolean>;
@@ -19,7 +19,7 @@ const SignInModal: FC<IModal> = ({ showModal, setShowModal, onSignIn }: IModal) 
   };
 
   const handleButtonClick = () => {
-    if (!validateSecretKeyInput(secretKey)) {
+    if (StrKey.isValidEd25519SecretSeed(secretKey)) {
       const signInTry = onSignIn(secretKey);
       if (!signInTry) {
         setError("An error has ocurred while login with secret key.");

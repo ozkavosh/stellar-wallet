@@ -1,4 +1,4 @@
-import StellarSdk from "stellar-sdk";
+import { Keypair } from "stellar-sdk";
 
 export const ACCOUNT_INITIAL_STATE = {
   publicKey: "",
@@ -27,8 +27,9 @@ export const accountReducer = (
     case "LOGIN_WITH_SECRET_KEY": {
       try {
         const secretKey = action.payload;
-        const account = StellarSdk.Keypair.fromSecret(secretKey);
-
+        const account = Keypair.fromSecret(secretKey);
+        
+        console.log(`Logged in with credentials: \nPK: ${account.publicKey()}\n SK:${account.secret()}`)
         return {
           secretKey: account.secret(),
           publicKey: account.publicKey(),
