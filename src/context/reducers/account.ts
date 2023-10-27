@@ -29,7 +29,6 @@ export const accountReducer = (
         const secretKey = action.payload;
         const account = Keypair.fromSecret(secretKey);
         
-        console.log(`Logged in with credentials: \nPK: ${account.publicKey()}\n SK:${account.secret()}`)
         return {
           secretKey: account.secret(),
           publicKey: account.publicKey(),
