@@ -1,6 +1,7 @@
+import { FC } from "react";
 import { Wrapper, Title, Container } from "./style";
 
-export default function Header() {
+const Header : FC = () => {
   return (
     <Wrapper>
         <Container>
@@ -9,3 +10,5 @@ export default function Header() {
     </Wrapper>
   )
 }
+
+export default Header;
