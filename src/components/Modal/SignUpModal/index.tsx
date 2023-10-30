@@ -1,6 +1,11 @@
-import { FC, useState } from "react";
+import { FC, useState, useEffect } from "react";
 import BaseModal from "../BaseModal";
-import { CopyKeysButton, TextInput } from "../style";
+import {
+  CheckBoxContainer,
+  CopyKeysButton,
+  ErrorText,
+  TextInput,
+} from "../style";
 import { Button } from "../../Button";
 import { MdContentCopy } from "react-icons/md";
 
@@ -8,6 +13,13 @@ interface ISignUpModal {
   showModal: React.SetStateAction<boolean>;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
   onCopyButtonClick: (publicKey: string, secretKey: string) => void;
+  keyGenerator: () => IKeyPair;
+}
+
+interface ISignUpState {
+  keyPair: IKeyPair;
+  keysSecured: boolean;
+  continueError: boolean;
 }
 
 interface IKeyPair {
@@ -15,14 +27,49 @@ interface IKeyPair {
   secretKey: string;
 }
 
-const SignUpModal: FC<ISignUpModal> = ({ showModal, setShowModal, onCopyButtonClick }: ISignUpModal) => {
-  const [keyPair, setKeyPair] = useState<IKeyPair>({
-    publicKey: "",
-    secretKey: "",
+const SignUpModal: FC<ISignUpModal> = ({
+  showModal,
+  setShowModal,
+  keyGenerator,
+  onCopyButtonClick,
+}: ISignUpModal) => {
+  const [signUpState, setSignUpState] = useState<ISignUpState>({
+    keyPair: {
+      publicKey: "",
+      secretKey: "",
+    },
+    keysSecured: false,
+    continueError: false,
   });
 
+  useEffect(() => {
+    setSignUpState((prev) => ({
+      ...prev,
+      keyPair: keyGenerator(),
+      keysSecured: false,
+      continueError: false,
+    }));
+  }, [showModal]);
+
   const handleTextInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setKeyPair((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    setSignUpState((prev) => ({
+      ...prev,
+      keyPair: { ...prev.keyPair, [e.target.name]: e.target.value },
+    }));
+  };
+
+  const handleContinueButtonClick = () => {
+    if (!signUpState.keysSecured) {
+      setSignUpState((prev) => ({ ...prev, continueError: true }));
+    } else {
+      setShowModal(false);
+    }
+  };
+
+  const handleCheckboxClick = () => {
+    setSignUpState((prev) => ({ ...prev, keysSecured: !prev.keysSecured }));
+    if (signUpState.continueError)
+      setSignUpState((prev) => ({ ...prev, continueError: false }));
   };
 
   return (
@@ -32,7 +79,7 @@ const SignUpModal: FC<ISignUpModal> = ({ showModal, setShowModal, onCopyButtonCl
         type="text"
         name="publicKey"
         placeholder="Public key"
-        value={keyPair.publicKey}
+        value={signUpState.keyPair.publicKey}
         onChange={handleTextInputChange}
         disabled
       />
@@ -40,14 +87,38 @@ const SignUpModal: FC<ISignUpModal> = ({ showModal, setShowModal, onCopyButtonCl
         type="text"
         name="secretKey"
         placeholder="Secret key"
-        value={keyPair.secretKey}
+        value={signUpState.keyPair.secretKey}
         onChange={handleTextInputChange}
         disabled
       />
-      <CopyKeysButton onClick={() => onCopyButtonClick(keyPair.publicKey, keyPair.secretKey)}>
+      <CopyKeysButton
+        onClick={() =>
+          onCopyButtonClick(
+            signUpState.keyPair.publicKey,
+            signUpState.keyPair.secretKey
+          )
+        }
+      >
         Copy keys <MdContentCopy />
       </CopyKeysButton>
-      <Button className="continue" $dark>
+
+      <CheckBoxContainer>
+        <input
+          type="checkbox"
+          name="keysSecured"
+          checked={signUpState.keysSecured}
+          onChange={handleCheckboxClick}
+        />
+        <label htmlFor="keysSecured">
+          I have stored my keys in a safe place.
+        </label>
+      </CheckBoxContainer>
+
+      {signUpState.continueError && (
+        <ErrorText>You must store your keys first.</ErrorText>
+      )}
+
+      <Button onClick={handleContinueButtonClick} className="continue" $dark>
         Continue
       </Button>
     </BaseModal>
