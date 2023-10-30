@@ -1,7 +1,57 @@
+import {
+  Container,
+  Column,
+  Title,
+  TextContent,
+  PublicKeyContainer,
+  AccountStatusWrapper,
+  Row
+} from "./style";
+import { Button } from "../../components/Button";
+import { useState, useEffect } from "react";
+import { useAccountContext } from "../../context/AccountContext";
+import { MdWarning, MdSend, MdQrCode } from "react-icons/md";
+import checkAccountExistence from "../../utils/checkAccountExistence";
+
 const Dashboard = () => {
+  const { accountState } = useAccountContext();
+  const [accountExists, setAccountExists] = useState<boolean>(false);
+
+  useEffect(() => {
+    (async () => {
+      const status = await checkAccountExistence(accountState.publicKey);
+      setAccountExists(status);
+    })();
+  }, [accountState.secretKey]);
+
   return (
-    <div>Dashboard</div>
-  )
-}
+    <Container>
+      <Row>
+      <Column>
+        <Title>Your balance:</Title>
+        <TextContent>0 Lumens (XLM)</TextContent>
+      </Column>
+      <Column>
+        <Button><MdSend/> Send</Button>
+        <Button><MdQrCode/> Receive</Button>
+      </Column>
+      </Row>
+      <Title>Your Stellar public key</Title>
+      <PublicKeyContainer>
+        <TextContent>{accountState.publicKey}</TextContent>
+      </PublicKeyContainer>
+      {!accountExists && (
+        <AccountStatusWrapper>
+          <MdWarning />
+          <TextContent>
+            This account is currently inactive. To activate it,
+            <span> send at least 1 lumen (XLM)</span> to the Stellar public key
+            displayed above.
+          </TextContent>
+        </AccountStatusWrapper>
+      )}
+    </Container>
+  );
+};
 
 export default Dashboard;
