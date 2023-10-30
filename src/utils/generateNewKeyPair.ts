@@ -1,7 +1,7 @@
-import StellarSDK from 'stellar-sdk';
+import { Keypair } from 'stellar-sdk';
 
 const generateNewKeyPair = () => {
-    const pair = StellarSDK.Keypair.random();
+    const pair = Keypair.random();
     return {
         publicKey: pair.publicKey(),
         secretKey: pair.secret(),
