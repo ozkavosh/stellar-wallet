@@ -96,3 +96,13 @@ export const ErrorText = styled.p`
   font-weight: bold;
   margin-top: 5px;
 `;
+
+export const CheckBoxContainer = styled.div`
+  display: flex;
+  margin-bottom: 10px;
+  width: 100%;
+
+  input {
+    margin-right: 10px;
+  }
+`;

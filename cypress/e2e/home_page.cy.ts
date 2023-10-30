@@ -50,4 +50,24 @@ describe("The Home Page", () => {
       );
     });
   })
+
+  describe("Sign up modal", () => {
+    beforeEach(() => {
+      cy.get("@signUpButton").click();
+      cy.get("button").contains("Continue").as("continueButton");
+    })
+
+    it("Should get an error message when the 'stored keypair' checkbox is not checked", () => {
+      cy.get("@continueButton").click();
+      cy.get("p").contains(
+        "You must store your keys first.",
+      );
+    });
+
+    it("Should close itself when continue button is clicked and 'stored keypair' is checked", () => {
+      cy.get("input[type='checkbox']").click();
+      cy.get("@continueButton").click();
+      cy.get("h2").contains('Create a new account').should("not.exist");
+    });
+  })
 });
