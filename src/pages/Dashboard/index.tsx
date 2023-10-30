@@ -8,12 +8,12 @@ import {
   Row
 } from "./style";
 import { Button } from "../../components/Button";
-import { useState, useEffect } from "react";
+import { useState, useEffect, FC } from "react";
 import { useAccountContext } from "../../context/AccountContext";
 import { MdWarning, MdSend, MdQrCode } from "react-icons/md";
 import checkAccountExistence from "../../utils/checkAccountExistence";
 
-const Dashboard = () => {
+const Dashboard : FC = () => {
   const { accountState } = useAccountContext();
   const [accountExists, setAccountExists] = useState<boolean>(false);
 
