@@ -89,3 +89,10 @@ export const CopyKeysButton = styled.button`
     margin-left: 5px;
   }
 `;
+
+export const ErrorText = styled.p`
+  color: ${(props) => props.theme.colors.danger};
+  font-size: 0.8em;
+  font-weight: bold;
+  margin-top: 5px;
+`;

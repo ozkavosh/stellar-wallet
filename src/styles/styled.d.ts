@@ -18,7 +18,7 @@ declare module 'styled-components' {
       dark: ''
       medium: ''
       light: ''
-      danger: ''
+      danger: '#801515'
       success: '#66A15A'
     }
     fonts: {

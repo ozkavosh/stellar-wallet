@@ -17,7 +17,7 @@ export const theme: IDefaultTheme = {
     dark: '',
     medium: '',
     light: '',
-    danger: '',
+    danger: '#801515',
     success: '#66A15A',
   },
   fonts: {
