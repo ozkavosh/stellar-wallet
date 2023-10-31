@@ -38,10 +38,6 @@ export const ModalContent = styled.div`
     align-self: flex-start;
   }
 
-  p {
-    margin-bottom: 1rem;
-  }
-
   button.continue {
     align-self: flex-end;
     padding: 0.5em 1em;
