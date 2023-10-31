@@ -5,7 +5,7 @@ import {
   TextContent,
   PublicKeyContainer,
   AccountStatusWrapper,
-  Row
+  Row,
 } from "./style";
 import { Button } from "../../components/Button";
 import { useState, useEffect, FC } from "react";
@@ -13,32 +13,36 @@ import { useAccountContext } from "../../context/AccountContext";
 import { MdWarning, MdSend, MdQrCode } from "react-icons/md";
 import checkAccountExistence from "../../utils/checkAccountExistence";
 
-const Dashboard : FC = () => {
-  const { accountState } = useAccountContext();
+const Dashboard: FC = () => {
+  const { accountState: { secretKey, publicKey } } = useAccountContext();
   const [accountExists, setAccountExists] = useState<boolean>(false);
 
   useEffect(() => {
     (async () => {
-      const status = await checkAccountExistence(accountState.publicKey);
+      const status = await checkAccountExistence(publicKey);
       setAccountExists(status);
     })();
-  }, [accountState.secretKey]);
+  }, [secretKey]);
 
   return (
     <Container>
       <Row>
-      <Column>
-        <Title>Your balance:</Title>
-        <TextContent>0 Lumens (XLM)</TextContent>
-      </Column>
-      <Column>
-        <Button><MdSend/> Send</Button>
-        <Button><MdQrCode/> Receive</Button>
-      </Column>
+        <Column>
+          <Title>Your balance:</Title>
+          <TextContent>0 Lumens (XLM)</TextContent>
+        </Column>
+        <Column>
+          <Button>
+            <MdSend /> Send
+          </Button>
+          <Button>
+            <MdQrCode /> Receive
+          </Button>
+        </Column>
       </Row>
       <Title>Your Stellar public key</Title>
       <PublicKeyContainer>
-        <TextContent>{accountState.publicKey}</TextContent>
+        <TextContent>{publicKey}</TextContent>
       </PublicKeyContainer>
       {!accountExists && (
         <AccountStatusWrapper>
