@@ -7,13 +7,14 @@ interface Props extends React.PropsWithChildren<{}> {
 
 const CopyPopup: FC<Props> = ({ children, onClick }: Props) => {
   const [showPopup, setShowPopup] = useState(false);
+  const DELAY_IN_MILLISECONDS = 1000;
 
   const handlePopUp = () => {
     if (!showPopup) {
       setShowPopup(true);
       setTimeout(() => {
         setShowPopup(false);
-      }, 1000);
+      }, DELAY_IN_MILLISECONDS);
     }
   };
 
