@@ -19,8 +19,12 @@ const Dashboard: FC = () => {
 
   useEffect(() => {
     (async () => {
-      const status = await checkAccountExistence(publicKey);
-      setAccountExists(status);
+      try{
+        const status = await checkAccountExistence(publicKey);
+        setAccountExists(status);
+      }catch{
+        setAccountExists(false);
+      }
     })();
   }, [secretKey]);
 
