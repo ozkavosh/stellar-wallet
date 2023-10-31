@@ -16,8 +16,6 @@ export const Row = styled.div`
 
 export const Column = styled.div`
   display: flex;
-  justify-content: center;
-  align-items: center;
   flex-direction: column;
   gap: .5rem;
 
@@ -68,6 +66,9 @@ export const AccountStatusWrapper = styled.div`
   }
   span, svg {
     color: ${({theme}) => theme.colors.primary};
+  }
+  span {
+    cursor: pointer;
   }
   svg { 
     margin-right: .5rem;
