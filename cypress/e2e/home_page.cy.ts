@@ -12,8 +12,7 @@ describe("The Home Page", () => {
   });
 
   it("Should contain two buttons", () => {
-    const buttons = cy.get("button");
-    buttons.should("have.length", 2);
+    cy.get("button").should("have.length", 2);
   });
 
   it("Should open sign in modal when sign in button is clicked", () => {
