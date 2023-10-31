@@ -21,7 +21,6 @@ describe("The Dashboard Page", () => {
   });
 
   it("Should contain two buttons", () => {
-    const buttons = cy.get("button");
-    buttons.should("have.length", 2);
+    cy.get("button").should("have.length", 2);
   });
 });
