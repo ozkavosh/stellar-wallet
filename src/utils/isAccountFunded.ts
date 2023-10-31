@@ -6,7 +6,7 @@ interface IFetchAccountError extends Error {
 
 const isAccountFunded = async (accountId: string) => {
   try {
-    const server = new Server("https://horizon-testnet.stellar.org");
+    const server = new Server(import.meta.env.VITE_HORIZON_URL as string);
 
     return Boolean(await server.accounts().accountId(accountId).call());
   } catch (err) {
