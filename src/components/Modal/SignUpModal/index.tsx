@@ -8,6 +8,7 @@ import {
 } from "../style";
 import { Button } from "../../Button";
 import { MdContentCopy } from "react-icons/md";
+import CopyPopup from "../../CopyPopup";
 
 interface ISignUpModal {
   showModal: React.SetStateAction<boolean>;
@@ -91,7 +92,7 @@ const SignUpModal: FC<ISignUpModal> = ({
         onChange={handleTextInputChange}
         disabled
       />
-      <CopyKeysButton
+      <CopyPopup
         onClick={() =>
           onCopyButtonClick(
             signUpState.keyPair.publicKey,
@@ -99,8 +100,10 @@ const SignUpModal: FC<ISignUpModal> = ({
           )
         }
       >
-        Copy keys <MdContentCopy />
-      </CopyKeysButton>
+        <CopyKeysButton>
+          Copy keys <MdContentCopy />
+        </CopyKeysButton>
+      </CopyPopup>
 
       <CheckBoxContainer>
         <input

@@ -25,9 +25,13 @@ export const AccountContextProvider = ({
     return accountState.secretKey.length > 0; 
   };
 
+  const logout = () => {
+    dispatch({ type: "LOGOUT" });
+  }
+
   return (
     <AccountContext.Provider
-      value={{ accountState, dispatch, loginWithSecretKey }}
+      value={{ accountState, dispatch, loginWithSecretKey, logout }}
     >
       {children}
     </AccountContext.Provider>
