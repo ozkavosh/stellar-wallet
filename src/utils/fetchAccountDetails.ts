@@ -4,11 +4,12 @@ interface IFetchAccountError extends Error {
   isUnfunded?: boolean;
 }
 
-const isAccountFunded = async (accountId: string) => {
+const fetchAccountDetails = async (publicKey: string) => {
   try {
     const server = new Server(import.meta.env.VITE_HORIZON_URL as string);
+    const accountSummary = await server.accounts().accountId(publicKey).call();
 
-    return Boolean(await server.accounts().accountId(accountId).call());
+    return accountSummary;
   } catch (err) {
     (err as any).isUnfunded =
       (err as any).response && (err as any).response.status === 404;
@@ -16,4 +17,4 @@ const isAccountFunded = async (accountId: string) => {
   }
 };
 
-export default isAccountFunded;
+export default fetchAccountDetails;
