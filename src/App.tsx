@@ -10,11 +10,11 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyles />
-      <Header />
       <AccountContextProvider>
-        <Navigation />
+        <Header />
+          <Navigation />
+        <Footer />
       </AccountContextProvider>
-      <Footer />
     </ThemeProvider>
   );
 }
