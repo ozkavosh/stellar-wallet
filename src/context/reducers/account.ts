@@ -28,7 +28,7 @@ export const accountReducer = (
       try {
         const secretKey = action.payload;
         const account = Keypair.fromSecret(secretKey);
-        
+
         return {
           secretKey: account.secret(),
           publicKey: account.publicKey(),
@@ -39,6 +39,10 @@ export const accountReducer = (
         };
       }
     }
+    case "LOGOUT":
+      return {
+        ...ACCOUNT_INITIAL_STATE,
+      };
     default:
       return state;
   }
