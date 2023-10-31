@@ -11,19 +11,21 @@ import { Button } from "../../components/Button";
 import { useState, useEffect, FC } from "react";
 import { useAccountContext } from "../../context/AccountContext";
 import { MdWarning, MdSend, MdQrCode } from "react-icons/md";
-import checkAccountExistence from "../../utils/checkAccountExistence";
+import checkAccountExistence from "../../utils/isAccountFunded";
 
 const Dashboard: FC = () => {
-  const { accountState: { secretKey, publicKey } } = useAccountContext();
+  const {
+    accountState: { secretKey, publicKey },
+  } = useAccountContext();
   const [accountExists, setAccountExists] = useState<boolean>(false);
 
   useEffect(() => {
     (async () => {
-      try{
+      try {
         const status = await checkAccountExistence(publicKey);
         setAccountExists(status);
-      }catch{
-        setAccountExists(false);
+      } catch (err){
+        setAccountExists(!(err as any).isUnfunded);
       }
     })();
   }, [secretKey]);
