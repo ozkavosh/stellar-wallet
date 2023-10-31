@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { Wrapper, Title, Container } from "./style";
 
-const Header : FC = () => {
+const Header: FC = () => {
   return (
     <Wrapper>
         <Container>

@@ -1,7 +1,7 @@
 import { Container, Column, FooterLink } from "./style";
 import { FC } from "react";
 
-const Footer : FC = () => {
+const Footer: FC = () => {
   return (
     <Container>
       <Column>
