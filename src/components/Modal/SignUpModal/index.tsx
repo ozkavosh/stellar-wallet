@@ -10,24 +10,6 @@ import { Button } from "../../Button";
 import { MdContentCopy } from "react-icons/md";
 import CopyPopup from "../../CopyPopup";
 
-interface ISignUpModal {
-  showModal: React.SetStateAction<boolean>;
-  setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
-  onCopyButtonClick: (publicKey: string, secretKey: string) => void;
-  keyGenerator: () => IKeyPair;
-}
-
-interface ISignUpState {
-  keyPair: IKeyPair;
-  keysSecured: boolean;
-  continueError: boolean;
-}
-
-interface IKeyPair {
-  publicKey: string;
-  secretKey: string;
-}
-
 const SignUpModal: FC<ISignUpModal> = ({
   showModal,
   setShowModal,
