@@ -3,11 +3,11 @@ import { Asset } from "stellar-sdk";
 const getNativeBalance = (balances: IBalance[]) => {
   const nativeCurrencyName = Asset.native().getCode();
 
-  const nativeBalance = balances.find(
-    (balance) => balance.asset_type === "native"
-  );
+  const { balance } = balances.find(
+    ({ asset_type }) => asset_type === "native"
+  ) || { balance: "0" };
 
-  return { balance: nativeBalance?.balance, name: nativeCurrencyName };
+  return { balance, name: nativeCurrencyName };
 };
 
 export default getNativeBalance;
