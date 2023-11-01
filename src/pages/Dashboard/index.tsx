@@ -8,34 +8,42 @@ import {
   Row,
 } from "./style";
 import { Button } from "../../components/Button";
-import { useState, useEffect, FC } from "react";
+import { FC } from "react";
 import { useAccountContext } from "../../context/AccountContext";
-import { MdWarning, MdSend, MdQrCode } from "react-icons/md";
-import checkAccountExistence from "../../utils/isAccountFunded";
+import { MdWarning, MdSend, MdQrCode, MdScience } from "react-icons/md";
+import fundAccount from "../../utils/fundAccount";
+import getNativeBalance from "../../utils/getNativeBalance";
+import { useAppContext } from "../../context/AppContext";
 
 const Dashboard: FC = () => {
   const {
-    accountState: { secretKey, publicKey },
+    accountState: { publicKey, isFunded, balances },
+    updateAccountDetails,
   } = useAccountContext();
-  const [accountExists, setAccountExists] = useState<boolean>(false);
+  const { toggleLoading } = useAppContext();
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const status = await checkAccountExistence(publicKey);
-        setAccountExists(status);
-      } catch (err){
-        setAccountExists(!(err as any).isUnfunded);
-      }
-    })();
-  }, [secretKey]);
+  const handleFundAccountClick = async () => {
+    try {
+      toggleLoading();
+      await fundAccount(publicKey);
+      await updateAccountDetails();
+    } catch (error) {
+      console.error(error);
+    } finally {
+      toggleLoading();
+    }
+  };
+
+  const nativeBalance = getNativeBalance(balances);
 
   return (
     <Container>
       <Row>
         <Column>
           <Title>Your balance:</Title>
-          <TextContent>0 Lumens (XLM)</TextContent>
+          <TextContent>
+            {nativeBalance?.balance} Lumens ({nativeBalance?.name})
+          </TextContent>
         </Column>
         <Column>
           <Button>
@@ -44,19 +52,26 @@ const Dashboard: FC = () => {
           <Button>
             <MdQrCode /> Receive
           </Button>
+          {!isFunded && (
+            <Button onClick={handleFundAccountClick}>
+              <MdScience /> Fund
+            </Button>
+          )}
         </Column>
       </Row>
       <Title>Your Stellar public key</Title>
       <PublicKeyContainer>
         <TextContent>{publicKey}</TextContent>
       </PublicKeyContainer>
-      {!accountExists && (
+      {!isFunded && (
         <AccountStatusWrapper>
           <MdWarning />
           <TextContent>
             This account is currently inactive. To activate it,
-            <span> send at least 1 lumen (XLM)</span> to the Stellar public key
-            displayed above.
+            <span onClick={handleFundAccountClick}>
+              send at least 1 lumen ({nativeBalance?.name})
+            </span>
+            to the Stellar public key displayed above.
           </TextContent>
         </AccountStatusWrapper>
       )}

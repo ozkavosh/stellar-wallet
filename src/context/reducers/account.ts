@@ -3,6 +3,10 @@ import { Keypair } from "stellar-sdk";
 export const ACCOUNT_INITIAL_STATE = {
   publicKey: "",
   secretKey: "",
+  balances: [],
+  sequence: "",
+  isFunded: false,
+  loginType: null
 };
 
 export const accountReducer = (
@@ -10,6 +14,22 @@ export const accountReducer = (
   action: IAccountAction
 ): IAccountState => {
   switch (action.type) {
+    case "SET_IS_FUNDED":
+      return {
+        ...state,
+        isFunded: action.payload as boolean,
+      };
+    case "SET_BALANCES":
+      return {
+        ...state,
+        balances: action.payload as IBalance[],
+      };
+    case "SET_SEQUENCE":
+      return {
+        ...state,
+        sequence: action.payload as string,
+      };
+
     case "SET_SECRET_KEY":
       return {
         ...state,
@@ -30,8 +50,10 @@ export const accountReducer = (
         const account = Keypair.fromSecret(secretKey);
 
         return {
-          secretKey: account.secret(),
+          ...state,
           publicKey: account.publicKey(),
+          secretKey: account.secret(),
+          loginType: "secretKey",
         };
       } catch {
         return {
