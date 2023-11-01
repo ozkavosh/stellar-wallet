@@ -10,7 +10,7 @@ const Loading: FC = () => {
   } = useAppContext();
 
   return isLoading ? (
-    <Container>
+    <Container data-test-name="loaderContainer">
       <RotatingSquare
         height="100"
         width="100"
