@@ -16,6 +16,7 @@ import getNativeBalance from "../../utils/getNativeBalance";
 import { useAppContext } from "../../context/AppContext";
 import SendAssetModal from "../../components/Modal/SendAssetModal";
 import sendAsset from "../../utils/sendAsset";
+import { Asset } from "stellar-sdk";
 
 const Dashboard: FC = () => {
   const {
@@ -43,13 +44,13 @@ const Dashboard: FC = () => {
     amount: string,
     assetType: string
   ) => {
-    try{
+    try {
       toggleLoading();
       await sendAsset(destination, secretKey, amount, assetType);
       updateAccountDetails();
-    }catch (error){
+    } catch (error) {
       console.error(error);
-    }finally{
+    } finally {
       toggleLoading();
     }
   };
@@ -61,6 +62,7 @@ const Dashboard: FC = () => {
         setShowModal={setShowAssetModal}
         balances={balances}
         onSendClick={handleSetAssetClick}
+        nativeAsset={Asset.native()}
       />
       <Row>
         <Column>
