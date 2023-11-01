@@ -43,8 +43,15 @@ const Dashboard: FC = () => {
     amount: string,
     assetType: string
   ) => {
-    await sendAsset(destination, secretKey, amount, assetType);
-    updateAccountDetails();
+    try{
+      toggleLoading();
+      await sendAsset(destination, secretKey, amount, assetType);
+      updateAccountDetails();
+    }catch (error){
+      console.error(error);
+    }finally{
+      toggleLoading();
+    }
   };
 
   return (
