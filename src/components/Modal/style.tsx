@@ -103,3 +103,18 @@ export const CheckBoxContainer = styled.div`
     margin-right: 10px;
   }
 `;
+
+export const CurrentBalance = styled.p`
+  font-size: 0.8em;
+  font-weight: bold;
+  margin: 1rem 0;
+`;
+
+export const Select = styled.select`
+  height: 50px;
+  width: 25rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 5px;
+  padding: 0 10px;
+  margin-bottom: 10px;
+`;

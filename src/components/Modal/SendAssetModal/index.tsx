@@ -1,9 +1,11 @@
 import { FC, useState, useEffect } from "react";
 import BaseModal from "../BaseModal";
-import { ErrorText, TextInput } from "../style";
+import { ErrorText, TextInput, CurrentBalance, Select } from "../style";
 import { Button } from "../../Button";
-import { Asset, StrKey } from "stellar-sdk";
+import { Asset } from "stellar-sdk";
 import { SEND_ASSET_MODAL_INITIAL_STATE } from "../../../utils/constants/InitialStates";
+import handleNamedInputChange from "../../../utils/handleNamedInputChange";
+import validateSendAssetInputs from "../../../utils/validateSendAssetInputs";
 
 const SendAssetModal: FC<ISendAssetModalProps> = ({
   showModal,
@@ -11,42 +13,34 @@ const SendAssetModal: FC<ISendAssetModalProps> = ({
   balances,
   onSendClick,
 }: ISendAssetModalProps) => {
-  const [formState, setFormState] = useState<IFormState>(SEND_ASSET_MODAL_INITIAL_STATE);
+  const [formState, setFormState] = useState<IFormState>(
+    SEND_ASSET_MODAL_INITIAL_STATE
+  );
 
   const resetForm = () => {
     setFormState(SEND_ASSET_MODAL_INITIAL_STATE);
   };
 
-  const validateInputs = () => {
-    let error = "";
-
-    if (!StrKey.isValidEd25519PublicKey(formState.destinationPublicKey)) {
-      setFormState({ ...formState, error: "Invalid destination public key" });
-      error = "Invalid destination public key";
-    }
-
-    if (formState.assetType === "0") {
-      error = "Must select an asset type";
-    }
-
-    const balance = parseFloat(
+  const getCurrentBalance = () => {
+    const currentBalance = parseFloat(
       balances.find((balance) => balance.asset_type === formState.assetType)
         ?.balance || "0"
     );
 
-    if (
-      isNaN(parseFloat(formState?.amount)) ||
-      balance < parseFloat(formState?.amount) ||
-      parseFloat(formState?.amount) < 0
-    ) {
-      error = "Invalid amount";
-    }
-
-    return error;
+    setFormState({ ...formState, currentBalance });
   };
 
   const handleButtonClick = async () => {
-    if (validateInputs()) {
+    const { destinationPublicKey, amount, assetType, currentBalance } =
+      formState;
+
+    const error = validateSendAssetInputs(
+      destinationPublicKey,
+      amount,
+      currentBalance,
+      assetType
+    );
+    if (!error) {
       try {
         await onSendClick(
           formState.destinationPublicKey,
@@ -55,26 +49,22 @@ const SendAssetModal: FC<ISendAssetModalProps> = ({
         );
         setShowModal(false);
       } catch (error) {
-        console.log(error);
         setFormState({ ...formState, error: "Error sending assets" });
       }
+    } else {
+      setFormState({ ...formState, error });
     }
-  };
-
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    setFormState({
-      ...formState,
-      [e.target.name]: e.target.value,
-    });
   };
 
   useEffect(() => {
-    if (showModal) {
+    if (formState.assetType && showModal) {
+      getCurrentBalance();
+    }
+
+    if (!showModal) {
       resetForm();
     }
-  }, [showModal]);
+  }, [formState.assetType, showModal]);
 
   return (
     <BaseModal showModal={showModal} setShowModal={setShowModal}>
@@ -83,22 +73,10 @@ const SendAssetModal: FC<ISendAssetModalProps> = ({
         placeholder="Destination Public key"
         name="destinationPublicKey"
         value={formState.destinationPublicKey}
-        onChange={handleInputChange}
+        onChange={(e) => handleNamedInputChange(e, setFormState)}
       />
-      <TextInput
-        placeholder="Amount"
-        name="amount"
-        value={formState.amount}
-        onChange={handleInputChange}
-      />
-      {formState.error && <ErrorText>{formState.error}</ErrorText>}
-      Disponible:{" "}
-      {
-        balances.find((balance) => balance.asset_type === formState.assetType)
-          ?.balance
-      }
-      <select
-        onChange={handleInputChange}
+      <Select
+        onChange={(e) => handleNamedInputChange(e, setFormState)}
         value={formState.assetType}
         name="assetType"
       >
@@ -112,7 +90,17 @@ const SendAssetModal: FC<ISendAssetModalProps> = ({
               : balance.asset_type}
           </option>
         ))}
-      </select>
+      </Select>
+      <TextInput
+        placeholder="Amount"
+        name="amount"
+        value={formState.amount}
+        onChange={(e) => handleNamedInputChange(e, setFormState)}
+      />
+      <CurrentBalance>
+        Available: {formState.currentBalance || "0"}
+      </CurrentBalance>
+      {formState.error && <ErrorText>{formState.error}</ErrorText>}
       <Button onClick={handleButtonClick} className="continue" $dark>
         Send
       </Button>

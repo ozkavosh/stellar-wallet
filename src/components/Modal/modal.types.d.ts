@@ -11,8 +11,9 @@ interface ISendAssetModalProps {
 
 interface IFormState {
   amount: string;
-  destinationPublicKey: string;
   assetType: string;
+  destinationPublicKey: string;
+  currentBalance: number;
   error: string;
 }
 

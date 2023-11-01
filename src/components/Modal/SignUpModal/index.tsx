@@ -9,6 +9,8 @@ import {
 import { Button } from "../../Button";
 import { MdContentCopy } from "react-icons/md";
 import CopyPopup from "../../CopyPopup";
+import { SIGN_UP_MODAL_INITIAL_STATE } from "../../../utils/constants/InitialStates";
+import handleNamedInputChange from "../../../utils/handleNamedInputChange";
 
 const SignUpModal: FC<ISignUpModal> = ({
   showModal,
@@ -16,30 +18,17 @@ const SignUpModal: FC<ISignUpModal> = ({
   keyGenerator,
   onCopyButtonClick,
 }: ISignUpModal) => {
-  const [signUpState, setSignUpState] = useState<ISignUpState>({
-    keyPair: {
-      publicKey: "",
-      secretKey: "",
-    },
-    keysSecured: false,
-    continueError: false,
-  });
+  const [signUpState, setSignUpState] = useState<ISignUpState>(SIGN_UP_MODAL_INITIAL_STATE);
+
+  const resetForm = () => {
+    setSignUpState({...SIGN_UP_MODAL_INITIAL_STATE, keyPair: keyGenerator()});
+  }
 
   useEffect(() => {
-    setSignUpState((prev) => ({
-      ...prev,
-      keyPair: keyGenerator(),
-      keysSecured: false,
-      continueError: false,
-    }));
+    if(!showModal){
+      resetForm();
+    }
   }, [showModal]);
-
-  const handleTextInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSignUpState((prev) => ({
-      ...prev,
-      keyPair: { ...prev.keyPair, [e.target.name]: e.target.value },
-    }));
-  };
 
   const handleContinueButtonClick = () => {
     if (!signUpState.keysSecured) {
@@ -63,7 +52,7 @@ const SignUpModal: FC<ISignUpModal> = ({
         name="publicKey"
         placeholder="Public key"
         value={signUpState.keyPair.publicKey}
-        onChange={handleTextInputChange}
+        onChange={(e) => handleNamedInputChange(e, setSignUpState)}
         disabled
       />
       <TextInput
@@ -71,7 +60,7 @@ const SignUpModal: FC<ISignUpModal> = ({
         name="secretKey"
         placeholder="Secret key"
         value={signUpState.keyPair.secretKey}
-        onChange={handleTextInputChange}
+        onChange={(e) => handleNamedInputChange(e, setSignUpState)}
         disabled
       />
       <CopyPopup
