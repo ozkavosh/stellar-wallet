@@ -9,7 +9,7 @@ export const useAccountContext = () => {
 
   if (!context)
     throw new Error(
-      "useAccountContext must be used within a AccountContextProvider"
+      "useAccountContext must be used within an AccountContextProvider"
     );
 
   return context;
@@ -59,7 +59,7 @@ export const AccountContextProvider = ({
   };
 
   useEffect(() => {
-    updateAccountDetails();
+    (async () => updateAccountDetails())();
   }, [accountState.publicKey]);
 
   return (
