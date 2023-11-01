@@ -2,6 +2,7 @@ interface ISendAssetModalProps {
   showModal: React.SetStateAction<boolean>;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
   balances: IBalance[];
+  nativeAsset: Asset;
   onSendClick: (
     destinationPublicKey: string,
     amount: string,

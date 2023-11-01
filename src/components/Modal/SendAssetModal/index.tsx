@@ -2,7 +2,6 @@ import { FC, useState, useEffect } from "react";
 import BaseModal from "../BaseModal";
 import { ErrorText, TextInput, CurrentBalance, Select } from "../style";
 import { Button } from "../../Button";
-import { Asset } from "stellar-sdk";
 import { SEND_ASSET_MODAL_INITIAL_STATE } from "../../../utils/constants/InitialStates";
 import handleNamedInputChange from "../../../utils/handleNamedInputChange";
 import validateSendAssetInputs from "../../../utils/validateSendAssetInputs";
@@ -12,6 +11,7 @@ const SendAssetModal: FC<ISendAssetModalProps> = ({
   setShowModal,
   balances,
   onSendClick,
+  nativeAsset
 }: ISendAssetModalProps) => {
   const [formState, setFormState] = useState<IFormState>(
     SEND_ASSET_MODAL_INITIAL_STATE
@@ -43,9 +43,9 @@ const SendAssetModal: FC<ISendAssetModalProps> = ({
     if (!error) {
       try {
         await onSendClick(
-          formState.destinationPublicKey,
-          formState.amount,
-          formState.assetType
+          destinationPublicKey,
+          amount,
+          assetType
         );
         setShowModal(false);
       } catch (error) {
@@ -86,7 +86,7 @@ const SendAssetModal: FC<ISendAssetModalProps> = ({
         {balances.map((balance) => (
           <option key={balance.asset_type} value={balance.asset_type}>
             {balance.asset_type === "native"
-              ? Asset.native().code
+              ? nativeAsset.code
               : balance.asset_type}
           </option>
         ))}
