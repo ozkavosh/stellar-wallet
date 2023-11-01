@@ -59,7 +59,7 @@ export const AccountContextProvider = ({
   };
 
   useEffect(() => {
-    (async () => updateAccountDetails())();
+    (async () => await updateAccountDetails())();
   }, [accountState.publicKey]);
 
   return (
