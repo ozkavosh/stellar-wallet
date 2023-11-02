@@ -8,7 +8,7 @@ import {
   Row,
 } from "./style";
 import { Button } from "../../components/Button";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { useAccountContext } from "../../context/AccountContext";
 import { MdWarning, MdSend, MdQrCode, MdScience } from "react-icons/md";
 import fundAccount from "../../utils/fundAccount";
@@ -20,11 +20,13 @@ import { Asset } from "stellar-sdk";
 import ReceiveAssetModal from "../../components/Modal/ReceiveAssetModal";
 import getAccountQRLink from "../../utils/getAccountQRLink";
 import handleCopyButtonClick from "../../utils/handleCopyKeysButton";
+import accountPaymentSubscribe from "../../utils/accountPaymentSubscribe";
+import PaymentsHistoryList from "../../components/PaymentsHistoryList";
 
 const Dashboard: FC = () => {
   const {
-    accountState: { publicKey, isFunded, balances, secretKey },
-    updateAccountDetails,
+    accountState: { publicKey, isFunded, balances, secretKey, payments },
+    updateAccountDetails, addPayment
   } = useAccountContext();
   const { toggleLoading } = useAppContext();
   const [showAssetModal, setShowAssetModal] = useState<boolean>(false);
@@ -58,6 +60,18 @@ const Dashboard: FC = () => {
       toggleLoading();
     }
   };
+
+  useEffect(() => {
+    const unsubscribe = payments.length ? accountPaymentSubscribe(
+      publicKey,
+      addPayment,
+      payments.at(-1)?.paging_token
+    ) : () => {};
+
+    return () => {
+      unsubscribe();
+    };
+  }, [publicKey, payments.length]);
 
   return (
     <Container>
@@ -117,6 +131,7 @@ const Dashboard: FC = () => {
           </TextContent>
         </AccountStatusWrapper>
       )}
+      <PaymentsHistoryList payments={payments} />
     </Container>
   );
 };
