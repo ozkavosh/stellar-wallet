@@ -47,3 +47,11 @@ interface IBaseModal {
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
   children: React.ReactNode;
 }
+
+interface IReceiveAssetModalProps {
+  showModal: boolean;
+  publicKey: string;
+  setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
+  accountQRLink: string;
+  onCopyLinkClick: () => void;
+}

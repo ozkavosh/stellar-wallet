@@ -118,3 +118,29 @@ export const Select = styled.select`
   padding: 0 10px;
   margin-bottom: 10px;
 `;
+
+export const QRCodeContainer = styled.div`
+  display: flex;
+  align-items: center;
+  border-radius: 5px;
+  width: 10rem;
+  background-color: ${(props) => props.theme.colors.tertiary};
+  padding: 1rem;
+  margin: 1rem 0;
+`;
+
+export const PublicKeyContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+export const PublicKeyText = styled.p`
+  font-size: 1em;
+  font-weight: bold;
+`;
+
+export const TextContent = styled.p`
+  font-size: 1em;
+  font-weight: bold;
+`;
