@@ -11,7 +11,7 @@ const SendAssetModal: FC<ISendAssetModalProps> = ({
   setShowModal,
   balances,
   onSendClick,
-  nativeAsset
+  nativeAsset,
 }: ISendAssetModalProps) => {
   const [formState, setFormState] = useState<IFormState>(
     SEND_ASSET_MODAL_INITIAL_STATE
@@ -42,11 +42,7 @@ const SendAssetModal: FC<ISendAssetModalProps> = ({
     );
     if (!error) {
       try {
-        await onSendClick(
-          destinationPublicKey,
-          amount,
-          assetType
-        );
+        await onSendClick(destinationPublicKey, amount, assetType);
         setShowModal(false);
       } catch (error) {
         setFormState({ ...formState, error: "Error sending assets" });
@@ -83,11 +79,9 @@ const SendAssetModal: FC<ISendAssetModalProps> = ({
         <option value="0" disabled>
           Select asset
         </option>
-        {balances.map((balance) => (
-          <option key={balance.asset_type} value={balance.asset_type}>
-            {balance.asset_type === "native"
-              ? nativeAsset.code
-              : balance.asset_type}
+        {balances.map(({ asset_type }) => (
+          <option key={asset_type} value={asset_type}>
+            {asset_type === "native" ? nativeAsset.code : asset_type}
           </option>
         ))}
       </Select>
