@@ -2,6 +2,7 @@ import { createContext, useContext, useReducer, useEffect } from "react";
 import { ACCOUNT_INITIAL_STATE, accountReducer } from "./reducers/account";
 import { ServerApi } from "stellar-sdk";
 import fetchAccountDetails from "../utils/fetchAccountDetails";
+import { useAppContext } from "./AppContext";
 
 const AccountContext = createContext<IAccountContext | null>(null);
 
@@ -23,6 +24,7 @@ export const AccountContextProvider = ({
     accountReducer,
     ACCOUNT_INITIAL_STATE
   );
+  const { toggleLoading } = useAppContext();
 
   const loginWithSecretKey = (secretKey: string) => {
     dispatch({ type: "LOGIN_WITH_SECRET_KEY", payload: secretKey });
@@ -39,6 +41,7 @@ export const AccountContextProvider = ({
   ) => {
     if (accountState.publicKey) {
       try {
+        toggleLoading();
         const { balances, sequence } = await fetchAccountDetails(
           accountState.publicKey
         );
@@ -64,6 +67,8 @@ export const AccountContextProvider = ({
           type: "SET_IS_FUNDED",
           payload: !(err as any).isUnfunded,
         });
+      } finally {
+        toggleLoading();
       }
     }
   };
