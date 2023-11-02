@@ -2,7 +2,6 @@ import { createContext, useContext, useReducer, useEffect } from "react";
 import { ACCOUNT_INITIAL_STATE, accountReducer } from "./reducers/account";
 import { ServerApi } from "stellar-sdk";
 import fetchAccountDetails from "../utils/fetchAccountDetails";
-import addValidPayment from "../utils/addValidPayment";
 
 const AccountContext = createContext<IAccountContext | null>(null);
 
@@ -35,23 +34,31 @@ export const AccountContextProvider = ({
     dispatch({ type: "LOGOUT" });
   };
 
-  const updateAccountDetails = async (payment?: ServerApi.PaymentOperationRecord) => {
+  const updateAccountDetails = async (
+    payment?: ServerApi.PaymentOperationRecord
+  ) => {
     if (accountState.publicKey) {
       try {
         const { balances, sequence } = await fetchAccountDetails(
           accountState.publicKey
         );
 
-        dispatch({
-          type: "SET_ACCOUNT",
-          payload: {
-            ...accountState,
-            balances,
-            sequence,
-            payments: addValidPayment(accountState.payments, payment),
-            isFunded: true,
-          },
-        });
+        if (!payment) {
+          dispatch({
+            type: "SET_ACCOUNT",
+            payload: {
+              ...accountState,
+              balances,
+              sequence,
+              isFunded: true,
+            },
+          });
+        } else {
+          dispatch({
+            type: "ADD_PAYMENT",
+            payload: { payment, balances },
+          });
+        }
       } catch (err) {
         dispatch({
           type: "SET_IS_FUNDED",
