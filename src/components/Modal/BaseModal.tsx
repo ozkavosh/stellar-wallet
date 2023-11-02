@@ -6,12 +6,6 @@ import {
   CloseModalButton,
 } from "./style";
 
-interface IBaseModal {
-  showModal: React.SetStateAction<boolean>;
-  setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
-  children: React.ReactNode;
-}
-
 const BaseModal : FC<IBaseModal> = ({
   showModal,
   setShowModal,

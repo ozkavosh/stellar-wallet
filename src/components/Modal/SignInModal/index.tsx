@@ -4,13 +4,7 @@ import { ErrorText, TextInput } from "../style";
 import { Button } from "../../Button";
 import { StrKey } from "stellar-sdk";
 
-interface IModal {
-  showModal: React.SetStateAction<boolean>;
-  setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
-  onSignIn: (secretKey: string) => boolean;
-}
-
-const SignInModal: FC<IModal> = ({ showModal, setShowModal, onSignIn }: IModal) => {
+const SignInModal: FC<ISignInModalProps> = ({ showModal, setShowModal, onSignIn }: ISignInModalProps) => {
   const [secretKey, setSecretKey] = useState<string>("");
   const [error, setError] = useState<string>("");
 

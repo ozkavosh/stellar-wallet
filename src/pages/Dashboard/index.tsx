@@ -8,19 +8,24 @@ import {
   Row,
 } from "./style";
 import { Button } from "../../components/Button";
-import { FC } from "react";
+import { FC, useState } from "react";
 import { useAccountContext } from "../../context/AccountContext";
 import { MdWarning, MdSend, MdQrCode, MdScience } from "react-icons/md";
 import fundAccount from "../../utils/fundAccount";
 import getNativeBalance from "../../utils/getNativeBalance";
 import { useAppContext } from "../../context/AppContext";
+import SendAssetModal from "../../components/Modal/SendAssetModal";
+import sendAsset from "../../utils/sendAsset";
+import { Asset } from "stellar-sdk";
 
 const Dashboard: FC = () => {
   const {
-    accountState: { publicKey, isFunded, balances },
+    accountState: { publicKey, isFunded, balances, secretKey },
     updateAccountDetails,
   } = useAccountContext();
   const { toggleLoading } = useAppContext();
+  const [showAssetModal, setShowAssetModal] = useState<boolean>(false);
+  const nativeBalance = getNativeBalance(balances);
 
   const handleFundAccountClick = async () => {
     try {
@@ -34,10 +39,31 @@ const Dashboard: FC = () => {
     }
   };
 
-  const nativeBalance = getNativeBalance(balances);
+  const handleSetAssetClick = async (
+    destination: string,
+    amount: string,
+    assetType: string
+  ) => {
+    try {
+      toggleLoading();
+      await sendAsset(destination, secretKey, amount, assetType);
+      updateAccountDetails();
+    } catch (error) {
+      console.error(error);
+    } finally {
+      toggleLoading();
+    }
+  };
 
   return (
     <Container>
+      <SendAssetModal
+        showModal={showAssetModal}
+        setShowModal={setShowAssetModal}
+        balances={balances}
+        onSendClick={handleSetAssetClick}
+        nativeAsset={Asset.native()}
+      />
       <Row>
         <Column>
           <Title>Your balance:</Title>
@@ -46,7 +72,10 @@ const Dashboard: FC = () => {
           </TextContent>
         </Column>
         <Column>
-          <Button>
+          <Button
+            disabled={!isFunded}
+            onClick={() => setShowAssetModal((prev) => !prev)}
+          >
             <MdSend /> Send
           </Button>
           <Button>
