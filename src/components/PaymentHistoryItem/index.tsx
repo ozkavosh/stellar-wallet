@@ -1,7 +1,7 @@
-import { FC } from "react";
-import { ServerApi } from "stellar-sdk";
-import getFormattedPayment from "../../utils/getFormattedPayment";
 import { TableDatum, TableRow } from "./style";
+import type { ServerApi } from "stellar-sdk";
+import { FC } from "react";
+import getFormattedPayment from "../../utils/getFormattedPayment";
 
 interface IPaymentHistoryItemProps {
   payment: ServerApi.PaymentOperationRecord;
