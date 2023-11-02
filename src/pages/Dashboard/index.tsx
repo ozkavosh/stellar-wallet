@@ -17,6 +17,9 @@ import { useAppContext } from "../../context/AppContext";
 import SendAssetModal from "../../components/Modal/SendAssetModal";
 import sendAsset from "../../utils/sendAsset";
 import { Asset } from "stellar-sdk";
+import ReceiveAssetModal from "../../components/Modal/ReceiveAssetModal";
+import getAccountQRLink from "../../utils/getAccountQRLink";
+import handleCopyButtonClick from "../../utils/handleCopyKeysButton";
 
 const Dashboard: FC = () => {
   const {
@@ -25,6 +28,7 @@ const Dashboard: FC = () => {
   } = useAccountContext();
   const { toggleLoading } = useAppContext();
   const [showAssetModal, setShowAssetModal] = useState<boolean>(false);
+  const [showReceiveModal, setShowReceiveModal] = useState<boolean>(false);
   const nativeBalance = getNativeBalance(balances);
 
   const handleFundAccountClick = async () => {
@@ -39,7 +43,7 @@ const Dashboard: FC = () => {
     }
   };
 
-  const handleSetAssetClick = async (
+  const handleSendAssetClick = async (
     destination: string,
     amount: string,
     assetType: string
@@ -61,8 +65,17 @@ const Dashboard: FC = () => {
         showModal={showAssetModal}
         setShowModal={setShowAssetModal}
         balances={balances}
-        onSendClick={handleSetAssetClick}
+        onSendClick={handleSendAssetClick}
         nativeAsset={Asset.native()}
+      />
+      <ReceiveAssetModal
+        showModal={showReceiveModal}
+        setShowModal={setShowReceiveModal}
+        onCopyLinkClick={() => {
+          handleCopyButtonClick(publicKey);
+        }}
+        accountQRLink={getAccountQRLink(publicKey)}
+        publicKey={publicKey}
       />
       <Row>
         <Column>
@@ -78,7 +91,7 @@ const Dashboard: FC = () => {
           >
             <MdSend /> Send
           </Button>
-          <Button>
+          <Button onClick={() => setShowReceiveModal((prev) => !prev)}>
             <MdQrCode /> Receive
           </Button>
           {!isFunded && (
