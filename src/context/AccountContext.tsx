@@ -36,32 +36,51 @@ export const AccountContextProvider = ({
     dispatch({ type: "LOGOUT" });
   };
 
-  const updateAccountDetails = async (
-    payment?: ServerApi.PaymentOperationRecord
-  ) => {
+  const addPayment = async (payment: ServerApi.PaymentOperationRecord) => {
+    try {
+      toggleLoading();
+      const { balances } = await fetchAccountDetails(accountState.publicKey);
+      dispatch({ type: "ADD_PAYMENT", payload: { payment, balances } });
+    } catch (error) {
+      console.error(error);
+    } finally {
+      toggleLoading();
+    }
+  };
+
+  const updateAccountDetails = async () => {
     if (accountState.publicKey) {
       try {
         toggleLoading();
-        const { balances, sequence } = await fetchAccountDetails(
+        const { balances, sequence, payments } = await fetchAccountDetails(
           accountState.publicKey
         );
 
-        if (!payment) {
-          dispatch({
-            type: "SET_ACCOUNT",
-            payload: {
-              ...accountState,
-              balances,
-              sequence,
-              isFunded: true,
-            },
-          });
-        } else {
-          dispatch({
-            type: "ADD_PAYMENT",
-            payload: { payment, balances },
-          });
+        const paymentRecords: ServerApi.PaymentOperationRecord[] = [];
+
+        if (accountState.payments.length === 0) {
+          const page = await payments();
+          paymentRecords.push(...page.records);
+
+          let next = await page.next();
+          while (next.records.length) {
+            paymentRecords.push(...next.records);
+            next = await next.next();
+          }
         }
+
+        dispatch({
+          type: "SET_ACCOUNT",
+          payload: {
+            ...accountState,
+            balances,
+            sequence,
+            payments: paymentRecords.length
+              ? paymentRecords
+              : accountState.payments,
+            isFunded: true,
+          },
+        });
       } catch (err) {
         dispatch({
           type: "SET_IS_FUNDED",
@@ -82,6 +101,7 @@ export const AccountContextProvider = ({
       value={{
         accountState,
         dispatch,
+        addPayment,
         loginWithSecretKey,
         logout,
         updateAccountDetails,

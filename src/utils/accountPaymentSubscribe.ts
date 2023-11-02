@@ -2,7 +2,7 @@ import StellarSDK, { ServerApi } from "stellar-sdk";
 
 const accountPaymentSubscribe = (
   publicKey: string,
-  onUpdate: (payment?: ServerApi.PaymentOperationRecord) => Promise<void>,
+  onUpdate: (payment: ServerApi.PaymentOperationRecord) => Promise<void>,
   cursor?: string
 ) => {
   const server = new StellarSDK.Server(import.meta.env.VITE_HORIZON_URL);
@@ -13,7 +13,7 @@ const accountPaymentSubscribe = (
   }
 
   const unsubscribeFunction = payments.stream({
-    onmessage: (payment?: ServerApi.PaymentOperationRecord) => {
+    onmessage: (payment: ServerApi.PaymentOperationRecord) => {
       onUpdate(payment);
     },
 

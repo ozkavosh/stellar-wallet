@@ -37,6 +37,7 @@ interface IAccountAction {
 interface IAccountContext {
   accountState: IAccountState;
   dispatch: React.Dispatch<IAccountAction>;
+  addPayment: (payment: import('stellar-sdk').ServerApi.PaymentOperationRecord) => Promise<void>;
   loginWithSecretKey: (secretKey: string) => boolean;
   logout: () => void;
   updateAccountDetails: () => Promise<void>;

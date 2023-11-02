@@ -46,20 +46,11 @@ export const accountReducer = (
         ...(action.payload as IAccountState),
       };
     case "ADD_PAYMENT":
-      const newPayment = (action.payload as IAddPayment).payment;
-      const updatedBalances = (action.payload as IAddPayment).balances;
-      const paymentExists = state.payments.some((p) => p.id === newPayment.id);
-
-      return !paymentExists
-        ? {
-            ...state,
-            payments: [
-              ...state.payments,
-              (action.payload as IAddPayment).payment,
-            ],
-            balances: updatedBalances,
-          }
-        : state;
+      return {
+        ...state,
+        payments: [...state.payments, (action.payload as IAddPayment).payment],
+        balances: (action.payload as IAddPayment).balances,
+      };
     case "LOGIN_WITH_SECRET_KEY": {
       try {
         const secretKey = action.payload;
