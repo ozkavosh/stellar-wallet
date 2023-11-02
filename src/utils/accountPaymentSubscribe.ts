@@ -2,22 +2,26 @@ import StellarSDK, { ServerApi } from "stellar-sdk";
 
 const accountPaymentSubscribe = (
   publicKey: string,
-  onUpdate: (payment?: ServerApi.PaymentOperationRecord) => Promise<void>
+  onUpdate: (payment?: ServerApi.PaymentOperationRecord) => Promise<void>,
+  cursor?: string
 ) => {
   const server = new StellarSDK.Server(import.meta.env.VITE_HORIZON_URL);
-  const unsubscribeFunction = server
-    .payments()
-    .forAccount(publicKey)
-    .stream({
-      onmessage: (payment?: ServerApi.PaymentOperationRecord) => {
-        onUpdate(payment);
-      },
+  const payments = server.payments().forAccount(publicKey);
 
-      onerror: (error: any) => {
-        console.error("Error in payment stream");
-        console.error(error);
-      },
-    });
+  if (cursor) {
+    payments.cursor(cursor);
+  }
+
+  const unsubscribeFunction = payments.stream({
+    onmessage: (payment?: ServerApi.PaymentOperationRecord) => {
+      onUpdate(payment);
+    },
+
+    onerror: (error: any) => {
+      console.error("Error in payment stream");
+      console.error(error);
+    },
+  });
 
   return unsubscribeFunction;
 };
