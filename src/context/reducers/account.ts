@@ -5,6 +5,7 @@ export const ACCOUNT_INITIAL_STATE = {
   secretKey: "",
   balances: [],
   sequence: "",
+  payments: [],
   isFunded: false,
   loginType: null
 };

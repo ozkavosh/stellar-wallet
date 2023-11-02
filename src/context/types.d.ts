@@ -4,6 +4,7 @@ interface IAccountState {
   balances: IBalance[];
   sequence: string;
   isFunded: boolean;
+  payments: import('stellar-sdk').ServerApi.PaymentOperationRecord[];
   loginType: "secretKey" | null;
 }
 
