@@ -1,5 +1,5 @@
 import { ServerApi, Asset } from "stellar-sdk";
-import shortenKey from "./shortenKey";
+import getShortedStellarKey from "./getShortedStellarKey";
 
 const getFormattedAsset = (assetType: string, assetCode?: string) => {
   return assetType === "native"
@@ -10,17 +10,15 @@ const getFormattedAsset = (assetType: string, assetCode?: string) => {
 const getFormattedPayment = (payment: ServerApi.PaymentOperationRecord) => {
   const { amount, asset_code, asset_type, from, to, created_at } = payment;
 
-  const formattedPayment = {
+  return {
     amount: Intl.NumberFormat("en-US", {
       maximumFractionDigits: 5,
     }).format(Number(amount)),
     asset: getFormattedAsset(asset_type, asset_code),
-    from: shortenKey(from),
-    to: shortenKey(to),
+    from: getShortedStellarKey(from),
+    to: getShortedStellarKey(to),
     date: new Date(created_at).toLocaleString(),
   };
-
-  return formattedPayment;
 };
 
 export default getFormattedPayment;
