@@ -10,15 +10,15 @@ interface IPaymentHistoryItemProps {
 const PaymentHistoryItem: FC<IPaymentHistoryItemProps> = ({
   payment,
 }: IPaymentHistoryItemProps) => {
-  const formattedPayment = getFormattedPayment(payment);
+  const { amount, asset, from, to, date } = getFormattedPayment(payment);
 
   return (
     <TableRow>
-      <TableDatum>{formattedPayment.amount}</TableDatum>
-      <TableDatum>{formattedPayment.asset}</TableDatum>
-      <TableDatum>{formattedPayment.from}</TableDatum>
-      <TableDatum>{formattedPayment.to}</TableDatum>
-      <TableDatum>{formattedPayment.date}</TableDatum>
+      <TableDatum>{amount}</TableDatum>
+      <TableDatum>{asset}</TableDatum>
+      <TableDatum>{from}</TableDatum>
+      <TableDatum>{to}</TableDatum>
+      <TableDatum>{date}</TableDatum>
     </TableRow>
   );
 };
