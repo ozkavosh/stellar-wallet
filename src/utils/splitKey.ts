@@ -1,9 +1,6 @@
 const splitKey = (key: string) => {
-    const keyLength = key.length;
-    const keySplitter = keyLength / 2;
-    const firstHalf = key.slice(0, keySplitter);
-    const secondHalf = key.slice(keySplitter, keyLength);
-    return [firstHalf, secondHalf];
-  };
+  const keySplitter = Math.floor(key.length / 2);
+  return [key.slice(0, keySplitter), key.slice(keySplitter, key.length)];
+};
 
-  export default splitKey;
+export default splitKey;
