@@ -6,6 +6,7 @@ import {
   TransactionBuilder,
   Networks,
   Operation,
+  AccountResponse,
 } from "stellar-sdk";
 import albedo from "@albedo-link/intent";
 import isTestNetwork from "./isTestNetwork";
@@ -21,6 +22,28 @@ const sendAssetFactory = (loginType: string | null) => {
   }
 };
 
+const buildTransaction = (
+  account: AccountResponse,
+  destination: string,
+  amount: string,
+  assetType: string,
+  timeout: number = 180
+) => {
+  return new TransactionBuilder(account, {
+    fee: BASE_FEE,
+    networkPassphrase: isTestNetwork() ? Networks.TESTNET : Networks.PUBLIC,
+  })
+    .addOperation(
+      Operation.payment({
+        destination,
+        asset: assetType === "native" ? Asset.native() : new Asset(assetType),
+        amount,
+      })
+    )
+    .setTimeout(timeout)
+    .build();
+};
+
 const sendAssetAlbedo = async (
   destination: string,
   publicKey: string,
@@ -33,27 +56,18 @@ const sendAssetAlbedo = async (
     const account = await server.loadAccount(publicKey);
     await server.loadAccount(destination);
 
-    const transaction = new TransactionBuilder(account, {
-      fee: BASE_FEE,
-      networkPassphrase: Networks.TESTNET,
-    })
-      .addOperation(
-        Operation.payment({
-          destination,
-          asset: assetType === "native" ? Asset.native() : new Asset(assetType),
-          amount,
-        })
-      )
-      .setTimeout(180)
-      .build();
+    const transaction = buildTransaction(
+      account,
+      destination,
+      amount,
+      assetType
+    );
 
     const albedoTransaction = {
       xdr: transaction.toXDR(),
       submit: true,
-      network: "public",
+      network: isTestNetwork() ? "testnet" : "public",
     };
-
-    if (isTestNetwork()) albedoTransaction.network = "testnet";
 
     await albedo.tx(albedoTransaction);
   } catch (err) {
@@ -74,21 +88,13 @@ const sendAssetSecret = async (
     const account = await server.loadAccount(sourceKeys.publicKey());
     await server.loadAccount(destination);
 
-    const transaction = new TransactionBuilder(account, {
-      fee: BASE_FEE,
-      networkPassphrase: Networks.TESTNET,
-    })
-      .addOperation(
-        Operation.payment({
-          destination,
-          asset: assetType === "native" ? Asset.native() : new Asset(assetType),
-          amount,
-        })
-      )
-      .setTimeout(180)
-      .build();
+    const transaction = buildTransaction(
+      account,
+      destination,
+      amount,
+      assetType
+    );
 
-    transaction.toXDR();
     transaction.sign(sourceKeys);
 
     await server.submitTransaction(transaction);
