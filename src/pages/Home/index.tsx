@@ -10,7 +10,7 @@ import generateNewKeyPair from "../../utils/generateNewKeyPair";
 const Home: FC = () => {
   const [showSignInModal, setShowSignInModal] = useState<boolean>(false);
   const [showSignUpModal, setShowSignUpModal] = useState<boolean>(false);
-  const { loginWithSecretKey } = useAccountContext();
+  const { loginWithSecretKey, loginWithAlbedo } = useAccountContext();
 
   return (
     <Container>
@@ -27,6 +27,7 @@ const Home: FC = () => {
         keyGenerator={generateNewKeyPair}
       />
       <ButtonContainer>
+        <Button onClick={loginWithAlbedo}>Connect with Albedo</Button>
         <Button onClick={() => setShowSignInModal((prev) => !prev)}>
           Connect with a secret key
         </Button>
