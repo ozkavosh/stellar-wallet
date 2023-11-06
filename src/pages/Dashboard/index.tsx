@@ -8,7 +8,7 @@ import {
   Row,
 } from "./style";
 import { Button } from "../../components/Button";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { useAccountContext } from "../../context/AccountContext";
 import { MdWarning, MdSend, MdQrCode, MdScience } from "react-icons/md";
 import fundAccount from "../../utils/fundAccount";
@@ -17,14 +17,20 @@ import { useAppContext } from "../../context/AppContext";
 import SendAssetModal from "../../components/Modal/SendAssetModal";
 import sendAsset from "../../utils/sendAsset";
 import { Asset } from "stellar-sdk";
+import ReceiveAssetModal from "../../components/Modal/ReceiveAssetModal";
+import getAccountQRLink from "../../utils/getAccountQRLink";
+import handleCopyButtonClick from "../../utils/handleCopyKeysButton";
+import accountPaymentSubscribe from "../../utils/accountPaymentSubscribe";
+import PaymentsHistoryList from "../../components/PaymentsHistoryList";
 
 const Dashboard: FC = () => {
   const {
-    accountState: { publicKey, isFunded, balances, secretKey },
-    updateAccountDetails,
+    accountState: { publicKey, isFunded, balances, secretKey, payments },
+    updateAccountDetails, addPayment
   } = useAccountContext();
   const { toggleLoading } = useAppContext();
   const [showAssetModal, setShowAssetModal] = useState<boolean>(false);
+  const [showReceiveModal, setShowReceiveModal] = useState<boolean>(false);
   const nativeBalance = getNativeBalance(balances);
 
   const handleFundAccountClick = async () => {
@@ -39,7 +45,7 @@ const Dashboard: FC = () => {
     }
   };
 
-  const handleSetAssetClick = async (
+  const handleSendAssetClick = async (
     destination: string,
     amount: string,
     assetType: string
@@ -55,20 +61,41 @@ const Dashboard: FC = () => {
     }
   };
 
+  useEffect(() => {
+    const unsubscribe = payments.length ? accountPaymentSubscribe(
+      publicKey,
+      addPayment,
+      payments.at(-1)?.paging_token
+    ) : () => {};
+
+    return () => {
+      unsubscribe();
+    };
+  }, [publicKey, payments.length]);
+
   return (
     <Container>
       <SendAssetModal
         showModal={showAssetModal}
         setShowModal={setShowAssetModal}
         balances={balances}
-        onSendClick={handleSetAssetClick}
+        onSendClick={handleSendAssetClick}
         nativeAsset={Asset.native()}
+      />
+      <ReceiveAssetModal
+        showModal={showReceiveModal}
+        setShowModal={setShowReceiveModal}
+        onCopyLinkClick={() => {
+          handleCopyButtonClick(publicKey);
+        }}
+        accountQRLink={getAccountQRLink(publicKey)}
+        publicKey={publicKey}
       />
       <Row>
         <Column>
           <Title>Your balance:</Title>
           <TextContent>
-            {nativeBalance?.balance} Lumens ({nativeBalance?.name})
+            <span data-test-name="balance">{nativeBalance?.balance}</span> Lumens ({nativeBalance?.name})
           </TextContent>
         </Column>
         <Column>
@@ -78,7 +105,7 @@ const Dashboard: FC = () => {
           >
             <MdSend /> Send
           </Button>
-          <Button>
+          <Button onClick={() => setShowReceiveModal((prev) => !prev)}>
             <MdQrCode /> Receive
           </Button>
           {!isFunded && (
@@ -104,6 +131,7 @@ const Dashboard: FC = () => {
           </TextContent>
         </AccountStatusWrapper>
       )}
+      <PaymentsHistoryList payments={payments} />
     </Container>
   );
 };

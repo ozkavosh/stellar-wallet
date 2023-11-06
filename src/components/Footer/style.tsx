@@ -7,6 +7,8 @@ export const Container = styled.footer`
   padding: 1.5rem 0;
   width: 85%;
   margin: auto;
+  border-top: 1px solid ${({ theme }) => theme.colors.primary};
+  margin-top: 5rem;
 `;
 
 export const Column = styled.div`

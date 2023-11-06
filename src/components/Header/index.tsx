@@ -12,7 +12,7 @@ import {
 import defaultProfilePicture from "../../assets/img/account_profile_picture.png";
 import { useAccountContext } from "../../context/AccountContext";
 import { MdCopyAll } from "react-icons/md";
-import shortenKey from "../../utils/shortenKey";
+import getShortedStellarKey from "../../utils/getShortedStellarKey";
 import handleCopyButtonClick from "../../utils/handleCopyKeysButton";
 import CopyPopup from "../CopyPopup";
 
@@ -31,7 +31,7 @@ const Header: FC = () => {
             <CopyPopup onClick={() => handleCopyButtonClick(publicKey)}>
               <PublicKeyContainer>
                 <ProfilePicture src={defaultProfilePicture} />
-                <PublicKey>{shortenKey(publicKey)}</PublicKey>
+                <PublicKey>{getShortedStellarKey(publicKey)}</PublicKey>
                 <MdCopyAll />
               </PublicKeyContainer>
             </CopyPopup>

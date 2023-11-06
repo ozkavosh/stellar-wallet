@@ -26,7 +26,7 @@ const validateSendAssetInputs = (
     error = errorMessages.invalidPublicKey;
   } else if (assetType === "0") {
     error = errorMessages.invalidAssetType;
-  } else if (validateAmountAndBalance(amount, currentBalance)) {
+  } else if (!validateAmountAndBalance(amount, currentBalance)) {
     error = errorMessages.invalidAmount;
   }
 

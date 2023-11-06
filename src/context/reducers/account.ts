@@ -5,8 +5,9 @@ export const ACCOUNT_INITIAL_STATE = {
   secretKey: "",
   balances: [],
   sequence: "",
+  payments: [],
   isFunded: false,
-  loginType: null
+  loginType: null,
 };
 
 export const accountReducer = (
@@ -43,6 +44,12 @@ export const accountReducer = (
     case "SET_ACCOUNT":
       return {
         ...(action.payload as IAccountState),
+      };
+    case "ADD_PAYMENT":
+      return {
+        ...state,
+        payments: [...state.payments, (action.payload as IAddPayment).payment],
+        balances: (action.payload as IAddPayment).balances,
       };
     case "LOGIN_WITH_SECRET_KEY": {
       try {

@@ -4,6 +4,7 @@ interface IAccountState {
   balances: IBalance[];
   sequence: string;
   isFunded: boolean;
+  payments: import('stellar-sdk').ServerApi.PaymentOperationRecord[];
   loginType: "secretKey" | null;
 }
 
@@ -14,6 +15,11 @@ interface IBalance {
   selling_liabilities: string;
 }
 
+interface IAddPayment {
+  payment: import('stellar-sdk').ServerApi.PaymentOperationRecord;
+  balances: IBalance[];
+}
+
 interface IAccountAction {
   type:
     | "SET_PUBLIC_KEY"
@@ -22,14 +28,16 @@ interface IAccountAction {
     | "SET_IS_FUNDED"
     | "SET_BALANCES"
     | "SET_SEQUENCE"
+    | "ADD_PAYMENT"
     | "LOGIN_WITH_SECRET_KEY"
     | "LOGOUT";
-  payload?: string | IAccountState | ILoginWithSecretKey | boolean | IBalance[];
+  payload?: string | IAccountState | ILoginWithSecretKey | boolean | IBalance[] | IAddPayment;
 }
 
 interface IAccountContext {
   accountState: IAccountState;
   dispatch: React.Dispatch<IAccountAction>;
+  addPayment: (payment: import('stellar-sdk').ServerApi.PaymentOperationRecord) => Promise<void>;
   loginWithSecretKey: (secretKey: string) => boolean;
   logout: () => void;
   updateAccountDetails: () => Promise<void>;
