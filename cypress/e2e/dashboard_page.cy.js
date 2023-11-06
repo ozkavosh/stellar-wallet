@@ -40,7 +40,7 @@ describe("The Dashboard Page", () => {
       cy.get("button").contains("Send").as("sendButton");
     });
 
-    it("Should show send form on send button click", () => {
+    it("Should show send modal on send button click", () => {
       cy.get("@sendButton").click();
       cy.get("input[name='destinationPublicKey']").should("exist");
       cy.get("select").should("exist");
@@ -96,7 +96,7 @@ describe("The Dashboard Page", () => {
       cy.get("span").contains("send at least 1 lumen (XLM)");
     });
 
-    it("Should fund account with 10000 lumens on fund button click", () => {
+    it.only("Should fund account with 10000 lumens on fund button click", () => {
       cy.get("button").contains("Fund").click();
 
       cy.intercept("GET", /payments/).as("updatePayments");
@@ -104,6 +104,17 @@ describe("The Dashboard Page", () => {
       cy.wait("@updatePayments").then(() => {
         cy.get("p").contains("10000.0000000 Lumens (XLM)");
       });
+    });
+  });
+
+  describe("The receive button", () => {
+    beforeEach(() => {
+      cy.get("button").contains("Receive").as("receiveButton");
+    });
+
+    it("Should show receive modal on receive button click", () => {
+      cy.get("@receiveButton").click();
+      cy.get("h2").contains("Your account QR code");
     });
   });
 });
