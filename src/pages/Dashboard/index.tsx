@@ -22,6 +22,7 @@ import getAccountQRLink from "../../utils/getAccountQRLink";
 import handleCopyButtonClick from "../../utils/handleCopyKeysButton";
 import accountPaymentSubscribe from "../../utils/accountPaymentSubscribe";
 import PaymentsHistoryList from "../../components/PaymentsHistoryList";
+import loginTypes from "../../utils/constants/loginTypes.ts";
 
 const Dashboard: FC = () => {
   const {
@@ -62,7 +63,7 @@ const Dashboard: FC = () => {
       toggleLoading();
       await sendAssetFactory(loginType)(
         destination,
-        loginType === "albedo" ? publicKey : secretKey,
+        loginType === loginTypes[0] ? secretKey : publicKey,
         amount,
         assetType
       );
