@@ -35,6 +35,49 @@ describe("The Dashboard Page", () => {
     cy.location().should(({ pathname }) => expect(pathname).to.eq("/"));
   });
 
+  describe("The send button", () => {
+    beforeEach(() => {
+      cy.get("button").contains("Send").as("sendButton");
+    });
+
+    it("Should show send form on send button click", () => {
+      cy.get("@sendButton").click();
+      cy.get("input[name='destinationPublicKey']").should("exist");
+      cy.get("select").should("exist");
+      cy.get("input[name='amount']").should("exist");
+      cy.get("button").contains("Send").should("exist");
+    });
+
+    it("Should send 1 XLM to destination account on send button click", () => {
+      cy.get("@sendButton").should("not.be.disabled").click();
+      cy.get("input[name='destinationPublicKey']").type(
+        "GAGKNKSOJRC7ZXYLVZNGKWORCNAQH3XUC5TAISYK7A3BGC4BUHIZS4BR"
+      );
+      cy.get("select").select("XLM");
+      cy.get("input[name='amount']").type("1");
+      cy.get("button").contains("Send").click();
+
+      cy.get("[data-test-name='balance']").then(($balance) => {
+        const currentBalance = $balance.text();
+
+        cy.intercept("POST", /transactions/).as("sendPayment");
+
+        cy.intercept(
+          "GET",
+          /accounts\/GBXFMQHEFYJ6UYBRF5SQJKLZMN5MVTYKWG545DVK2TQITTOAF5FEHQDU/
+        ).as("updateAccount");
+
+        cy.wait("@sendPayment")
+          .wait("@updateAccount")
+          .wait("@updateAccount")
+          .then(({ response }) => {
+            const newBalance = response.body.balances[0].balance;
+            expect(parseInt(newBalance)).to.eq(parseInt(currentBalance) - 1);
+          });
+      });
+    });
+  });
+
   describe("The fund button", () => {
     beforeEach(() => {
       cy.visit("/");
@@ -55,8 +98,12 @@ describe("The Dashboard Page", () => {
 
     it("Should fund account with 10000 lumens on fund button click", () => {
       cy.get("button").contains("Fund").click();
-      cy.get('[test-name="loaderContainer"]').should('not.exist');
-      cy.get("p").contains("10000.0000000 Lumens (XLM)");
+
+      cy.intercept("GET", /payments/).as("updatePayments");
+
+      cy.wait("@updatePayments").then(() => {
+        cy.get("p").contains("10000.0000000 Lumens (XLM)");
+      });
     });
   });
 });
