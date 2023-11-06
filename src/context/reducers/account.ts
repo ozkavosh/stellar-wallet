@@ -68,6 +68,12 @@ export const accountReducer = (
         };
       }
     }
+    case "LOGIN_WITH_ALBEDO":
+      return {
+        ...state,
+        publicKey: action.payload as string,
+        loginType: "albedo",
+      };
     case "LOGOUT":
       return {
         ...ACCOUNT_INITIAL_STATE,

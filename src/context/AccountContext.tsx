@@ -1,6 +1,7 @@
 import { createContext, useContext, useReducer, useEffect } from "react";
 import { ACCOUNT_INITIAL_STATE, accountReducer } from "./reducers/account";
 import { ServerApi } from "stellar-sdk";
+import albedo from "@albedo-link/intent";
 import fetchAccountDetails from "../utils/fetchAccountDetails";
 import { useAppContext } from "./AppContext";
 
@@ -30,6 +31,18 @@ export const AccountContextProvider = ({
     dispatch({ type: "LOGIN_WITH_SECRET_KEY", payload: secretKey });
 
     return accountState.secretKey.length > 0;
+  };
+
+  const loginWithAlbedo = async () => {
+    try {
+      toggleLoading();
+      const { pubkey } = await albedo.publicKey({ token: import.meta.env.VITE_ALBEDO_APP_TOKEN });
+      dispatch({ type: "LOGIN_WITH_ALBEDO", payload: pubkey });
+    } catch (err) {
+      console.error(err);
+    } finally {
+      toggleLoading();
+    }
   };
 
   const logout = () => {
@@ -103,6 +116,7 @@ export const AccountContextProvider = ({
         dispatch,
         addPayment,
         loginWithSecretKey,
+        loginWithAlbedo,
         logout,
         updateAccountDetails,
       }}
