@@ -95,7 +95,7 @@ const Dashboard: FC = () => {
         <Column>
           <Title>Your balance:</Title>
           <TextContent>
-            {nativeBalance?.balance} Lumens ({nativeBalance?.name})
+            <span data-test-name="balance">{nativeBalance?.balance}</span> Lumens ({nativeBalance?.name})
           </TextContent>
         </Column>
         <Column>
