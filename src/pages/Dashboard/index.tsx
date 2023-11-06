@@ -15,7 +15,7 @@ import fundAccount from "../../utils/fundAccount";
 import getNativeBalance from "../../utils/getNativeBalance";
 import { useAppContext } from "../../context/AppContext";
 import SendAssetModal from "../../components/Modal/SendAssetModal";
-import sendAsset from "../../utils/sendAsset";
+import sendAssetFactory from "../../utils/sendAsset";
 import { Asset } from "stellar-sdk";
 import ReceiveAssetModal from "../../components/Modal/ReceiveAssetModal";
 import getAccountQRLink from "../../utils/getAccountQRLink";
@@ -25,8 +25,16 @@ import PaymentsHistoryList from "../../components/PaymentsHistoryList";
 
 const Dashboard: FC = () => {
   const {
-    accountState: { publicKey, isFunded, balances, secretKey, payments },
-    updateAccountDetails, addPayment
+    accountState: {
+      publicKey,
+      isFunded,
+      balances,
+      secretKey,
+      payments,
+      loginType,
+    },
+    updateAccountDetails,
+    addPayment,
   } = useAccountContext();
   const { toggleLoading } = useAppContext();
   const [showAssetModal, setShowAssetModal] = useState<boolean>(false);
@@ -52,7 +60,12 @@ const Dashboard: FC = () => {
   ) => {
     try {
       toggleLoading();
-      await sendAsset(destination, secretKey, amount, assetType);
+      await sendAssetFactory(loginType)(
+        destination,
+        loginType === "albedo" ? publicKey : secretKey,
+        amount,
+        assetType
+      );
       updateAccountDetails();
     } catch (error) {
       console.error(error);
@@ -62,11 +75,13 @@ const Dashboard: FC = () => {
   };
 
   useEffect(() => {
-    const unsubscribe = payments.length ? accountPaymentSubscribe(
-      publicKey,
-      addPayment,
-      payments.at(-1)?.paging_token
-    ) : () => {};
+    const unsubscribe = payments.length
+      ? accountPaymentSubscribe(
+          publicKey,
+          addPayment,
+          payments.at(-1)?.paging_token
+        )
+      : () => {};
 
     return () => {
       unsubscribe();
@@ -95,7 +110,8 @@ const Dashboard: FC = () => {
         <Column>
           <Title>Your balance:</Title>
           <TextContent>
-            <span data-test-name="balance">{nativeBalance?.balance}</span> Lumens ({nativeBalance?.name})
+            <span data-test-name="balance">{nativeBalance?.balance}</span>{" "}
+            Lumens ({nativeBalance?.name})
           </TextContent>
         </Column>
         <Column>
