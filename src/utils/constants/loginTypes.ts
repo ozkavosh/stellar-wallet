@@ -1,5 +1,6 @@
-const loginTypes = [
-  "secretKey"
-];
+enum loginTypes {
+  SecretKey,
+  Albedo
+};
 
 export default loginTypes;
