@@ -1,4 +1,4 @@
-import { Keypair } from "stellar-sdk";
+import loginTypes from "../../utils/constants/loginTypes";
 
 export const ACCOUNT_INITIAL_STATE = {
   publicKey: "",
@@ -52,27 +52,18 @@ export const accountReducer = (
         balances: (action.payload as IAddPayment).balances,
       };
     case "LOGIN_WITH_SECRET_KEY": {
-      try {
-        const secretKey = action.payload;
-        const account = Keypair.fromSecret(secretKey);
-
-        return {
-          ...state,
-          publicKey: account.publicKey(),
-          secretKey: account.secret(),
-          loginType: "secretKey",
-        };
-      } catch {
-        return {
-          ...state,
-        };
-      }
-    }
-    case "LOGIN_WITH_ALBEDO":
       return {
         ...state,
-        publicKey: action.payload as string,
-        loginType: "albedo",
+        publicKey: action.payload.publicKey,
+        secretKey: action.payload.secretKey,
+        loginType: loginTypes.SecretKey,
+      };
+    }
+    case "LOGIN_WITH_PUBLIC_KEY":
+      return {
+        ...state,
+        publicKey: action.payload.publicKey,
+        loginType: action.payload.loginType,
       };
     case "LOGOUT":
       return {

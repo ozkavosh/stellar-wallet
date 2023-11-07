@@ -1,9 +1,11 @@
 import { createContext, useContext, useReducer, useEffect } from "react";
 import { ACCOUNT_INITIAL_STATE, accountReducer } from "./reducers/account";
 import { ServerApi } from "stellar-sdk";
-import albedo from "@albedo-link/intent";
 import fetchAccountDetails from "../utils/fetchAccountDetails";
 import { useAppContext } from "./AppContext";
+import loginTypes from "../utils/constants/loginTypes";
+import WalletFactory from "../utils/classes/wallet/WalletFactory";
+import SecretKey from "../utils/classes/wallet/SecretKey/SecretKey";
 
 const AccountContext = createContext<IAccountContext | null>(null);
 
@@ -27,17 +29,34 @@ export const AccountContextProvider = ({
   );
   const { toggleLoading } = useAppContext();
 
-  const loginWithSecretKey = (secretKey: string) => {
-    dispatch({ type: "LOGIN_WITH_SECRET_KEY", payload: secretKey });
-
-    return accountState.secretKey.length > 0;
-  };
-
-  const loginWithAlbedo = async () => {
+  const login = async (loginType: loginTypes, secretKey?: string) => {
     try {
       toggleLoading();
-      const { pubkey } = await albedo.publicKey({ token: import.meta.env.VITE_ALBEDO_APP_TOKEN });
-      dispatch({ type: "LOGIN_WITH_ALBEDO", payload: pubkey });
+      WalletFactory.create(loginType);
+
+      switch (loginType) {
+        case loginTypes.SecretKey:
+          if (!secretKey) throw new Error("Secret key is required");
+          dispatch({
+            type: "LOGIN_WITH_SECRET_KEY",
+            payload: {
+              publicKey: await (
+                WalletFactory.getWallet() as SecretKey
+              ).getPublicKey(secretKey as string),
+              secretKey,
+            },
+          });
+          break;
+        default:
+          dispatch({
+            type: "LOGIN_WITH_PUBLIC_KEY",
+            payload: {
+              publicKey: await WalletFactory.getWallet().getPublicKey(),
+              loginType,
+            },
+          });
+          break;
+      }
     } catch (err) {
       console.error(err);
     } finally {
@@ -115,8 +134,7 @@ export const AccountContextProvider = ({
         accountState,
         dispatch,
         addPayment,
-        loginWithSecretKey,
-        loginWithAlbedo,
+        login,
         logout,
         updateAccountDetails,
       }}

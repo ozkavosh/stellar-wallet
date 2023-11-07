@@ -4,8 +4,8 @@ interface IAccountState {
   balances: IBalance[];
   sequence: string;
   isFunded: boolean;
-  payments: import('stellar-sdk').ServerApi.PaymentOperationRecord[];
-  loginType: "secretKey" | "albedo" | null;
+  payments: import("stellar-sdk").ServerApi.PaymentOperationRecord[];
+  loginType: import("../utils/constants/loginTypes").default | null;
 }
 
 interface IBalance {
@@ -16,7 +16,7 @@ interface IBalance {
 }
 
 interface IAddPayment {
-  payment: import('stellar-sdk').ServerApi.PaymentOperationRecord;
+  payment: import("stellar-sdk").ServerApi.PaymentOperationRecord;
   balances: IBalance[];
 }
 
@@ -30,17 +30,24 @@ interface IAccountAction {
     | "SET_SEQUENCE"
     | "ADD_PAYMENT"
     | "LOGIN_WITH_SECRET_KEY"
-    | "LOGIN_WITH_ALBEDO"
+    | "LOGIN_WITH_PUBLIC_KEY"
     | "LOGOUT";
-  payload?: string | IAccountState | ILoginWithSecretKey | boolean | IBalance[] | IAddPayment;
+  payload?:
+    | string
+    | IAccountState
+    | ILoginWithSecretKey
+    | boolean
+    | IBalance[]
+    | IAddPayment;
 }
 
 interface IAccountContext {
   accountState: IAccountState;
   dispatch: React.Dispatch<IAccountAction>;
-  addPayment: (payment: import('stellar-sdk').ServerApi.PaymentOperationRecord) => Promise<void>;
-  loginWithSecretKey: (secretKey: string) => boolean;
-  loginWithAlbedo: () => Promise<void>;
+  addPayment: (
+    payment: import("stellar-sdk").ServerApi.PaymentOperationRecord
+  ) => Promise<void>;
+  login: (loginType: import("../utils/constants/loginTypes").default, secretKey?: string) => Promise<void>;
   logout: () => void;
   updateAccountDetails: () => Promise<void>;
 }
