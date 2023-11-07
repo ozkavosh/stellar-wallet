@@ -4,7 +4,11 @@ import { ErrorText, TextInput } from "../style";
 import { Button } from "../../Button";
 import { StrKey } from "stellar-sdk";
 
-const SignInModal: FC<ISignInModalProps> = ({ showModal, setShowModal, onSignIn }: ISignInModalProps) => {
+const SignInModal: FC<ISignInModalProps> = ({
+  showModal,
+  setShowModal,
+  onSignIn,
+}: ISignInModalProps) => {
   const [secretKey, setSecretKey] = useState<string>("");
   const [error, setError] = useState<string>("");
 
@@ -12,16 +16,19 @@ const SignInModal: FC<ISignInModalProps> = ({ showModal, setShowModal, onSignIn 
     setSecretKey(e.target.value);
   };
 
-  const handleButtonClick = () => {
+  const handleButtonClick = async () => {
     if (StrKey.isValidEd25519SecretSeed(secretKey)) {
-      const signInTry = onSignIn(secretKey);
-      if (!signInTry) {
-        setError("An error has ocurred while login with secret key.");
+      try {
+        await onSignIn(secretKey);
+      } catch (error: any) {
+        setError(error.message);
       }
-    }else{
-      setError("Invalid secret key. Must start with S and be 56 characters long.");
+    } else {
+      setError(
+        "Invalid secret key. Must start with S and be 56 characters long."
+      );
     }
-  }
+  };
 
   return (
     <BaseModal showModal={showModal} setShowModal={setShowModal}>
@@ -34,7 +41,9 @@ const SignInModal: FC<ISignInModalProps> = ({ showModal, setShowModal, onSignIn 
         placeholder="Starts with S, example: SCHK..."
       />
       {error && <ErrorText>{error}</ErrorText>}
-      <Button onClick={handleButtonClick} className="continue" $dark>Connect</Button>
+      <Button onClick={handleButtonClick} className="continue" $dark>
+        Connect
+      </Button>
     </BaseModal>
   );
 };

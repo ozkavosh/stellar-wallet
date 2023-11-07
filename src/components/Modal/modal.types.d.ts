@@ -21,7 +21,7 @@ interface IFormState {
 interface ISignInModalProps {
   showModal: React.SetStateAction<boolean>;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
-  onSignIn: (secretKey: string) => boolean;
+  onSignIn: (secretKey: string) => Promise<void>;
 }
 
 interface ISignUpModal {

@@ -15,25 +15,17 @@ import fundAccount from "../../utils/fundAccount";
 import getNativeBalance from "../../utils/getNativeBalance";
 import { useAppContext } from "../../context/AppContext";
 import SendAssetModal from "../../components/Modal/SendAssetModal";
-import sendAssetFactory from "../../utils/sendAsset";
+import sendAsset from "../../utils/sendAsset";
 import { Asset } from "stellar-sdk";
 import ReceiveAssetModal from "../../components/Modal/ReceiveAssetModal";
 import getAccountQRLink from "../../utils/getAccountQRLink";
 import handleCopyButtonClick from "../../utils/handleCopyKeysButton";
 import accountPaymentSubscribe from "../../utils/accountPaymentSubscribe";
 import PaymentsHistoryList from "../../components/PaymentsHistoryList";
-import loginTypes from "../../utils/constants/loginTypes.ts";
 
 const Dashboard: FC = () => {
   const {
-    accountState: {
-      publicKey,
-      isFunded,
-      balances,
-      secretKey,
-      payments,
-      loginType,
-    },
+    accountState: { publicKey, isFunded, balances, payments },
     updateAccountDetails,
     addPayment,
   } = useAccountContext();
@@ -55,19 +47,19 @@ const Dashboard: FC = () => {
   };
 
   const handleSendAssetClick = async (
-    destination: string,
+    destinationPublicKey: string,
     amount: string,
     assetType: string
   ) => {
     try {
       toggleLoading();
-      await sendAssetFactory(loginType)(
-        destination,
-        loginType === loginTypes[0] ? secretKey : publicKey,
+      await sendAsset({
+        destinationPublicKey,
+        publicKey,
         amount,
-        assetType
-      );
-      updateAccountDetails();
+        assetType,
+      });
+      await updateAccountDetails();
     } catch (error) {
       console.error(error);
     } finally {
