@@ -6,11 +6,28 @@ import SignUpModal from "../../components/Modal/SignUpModal";
 import handleCopyButtonClick from "../../utils/handleCopyKeysButton";
 import { useAccountContext } from "../../context/AccountContext";
 import generateNewKeyPair from "../../utils/generateNewKeyPair";
+import loginTypes from "../../utils/constants/loginTypes";
 
 const Home: FC = () => {
   const [showSignInModal, setShowSignInModal] = useState<boolean>(false);
   const [showSignUpModal, setShowSignUpModal] = useState<boolean>(false);
-  const { loginWithSecretKey, loginWithAlbedo } = useAccountContext();
+  const { login } = useAccountContext();
+
+  const loginWithAlbedo = async () => {
+    try {
+      await login(loginTypes.Albedo);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const loginWithSecretKey = async (secretKey: string) => {
+    try {
+      await login(loginTypes.SecretKey, secretKey);
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   return (
     <Container>
